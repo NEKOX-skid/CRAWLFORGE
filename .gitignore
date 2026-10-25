@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Test and tooling
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.playwright/
+
+# Crawl output and local state
+results.jsonl
+out.jsonl
+report.html
+state.json
+crawlforge-output/
+*.crawlstate
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example

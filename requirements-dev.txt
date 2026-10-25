@@ -1,0 +1,2 @@
+# Optional dependency for the browser-based dashboard test.
+playwright>=1.40

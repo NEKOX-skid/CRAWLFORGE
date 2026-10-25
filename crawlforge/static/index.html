@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crawlforge</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1c2128;--mut:#667085;--line:#e4e7ec;--acc:#3b5bdb;--acc2:#edf0ff;--ok:#067647;--okb:#e7f6ee;--warn:#b54708;--warnb:#fff4e5;--bad:#b42318;--badb:#fdecea;--info:#175cd3;--infob:#e8f1ff}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--fg:#e6e8ec;--mut:#98a2b3;--line:#2a2f3a;--acc:#7c93ff;--acc2:#1e2440;--ok:#6ce9a6;--okb:#12271d;--warn:#fdb022;--warnb:#2b2111;--bad:#f97066;--badb:#2d1715;--info:#84b2ff;--infob:#16233d}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header b{font-size:16px;letter-spacing:.2px}.pill{font-size:12px;padding:2px 10px;border-radius:99px;background:var(--acc2);color:var(--acc)}
+.pill.running{background:var(--warnb);color:var(--warn)}.pill.done{background:var(--okb);color:var(--ok)}.pill.error,.pill.stopped{background:var(--badb);color:var(--bad)}
+main{display:grid;grid-template-columns:340px 1fr;gap:16px;padding:16px 20px;max-width:1500px;margin:auto}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+aside .card{margin-bottom:12px}h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit}
+textarea{resize:vertical;min-height:64px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;padding:4px 11px;cursor:pointer;font:inherit;font-size:12px}
+.chip:hover,.chip.on{border-color:var(--acc);color:var(--acc);background:var(--acc2)}
+.tg{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--fg);font-size:13px}.tg input{accent-color:var(--acc)}
+details summary{cursor:pointer;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.btn{border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;background:var(--acc);color:#fff;width:100%}
+.btn.sec{background:var(--bg);color:var(--fg);border:1px solid var(--line)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.auth{display:flex;gap:8px;font-size:12px;color:var(--mut);margin:10px 0}.err{color:var(--bad);font-size:12px;margin-top:8px;min-height:1em}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat b{display:block;font-size:22px}.stat span{color:var(--mut);font-size:12px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:10px;flex-wrap:wrap}
+.tab{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;color:var(--mut);font:inherit;cursor:pointer}.tab.on{color:var(--acc);border-color:var(--acc)}
+.bar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}.bar input{flex:1;min-width:160px}
+.tw{overflow-x:auto;max-height:62vh;overflow-y:auto}table{border-collapse:collapse;width:100%}
+th{position:sticky;top:0;background:var(--card);text-align:left;font-size:12px;color:var(--mut);padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:6px 8px;border-bottom:1px solid var(--line);word-break:break-all;vertical-align:top}td a{color:var(--fg);text-decoration:none}td a:hover{color:var(--acc);text-decoration:underline}
+.s{display:inline-block;min-width:38px;text-align:center;border-radius:6px;padding:1px 6px;font-size:12px;font-weight:600}
+.s2{background:var(--okb);color:var(--ok)}.s3{background:var(--infob);color:var(--info)}.s4{background:var(--warnb);color:var(--warn)}.s5,.s0{background:var(--badb);color:var(--bad)}
+.empty{color:var(--mut);text-align:center;padding:36px 0}.kv{display:flex;align-items:center;gap:8px;margin:4px 0}.kv i{height:8px;border-radius:4px;background:var(--acc);display:block}
+.kv span:first-child{width:130px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}ul.f{margin:4px 0 14px;padding-left:18px;word-break:break-all}
+h4{margin:14px 0 4px}.ex{display:flex;gap:6px;flex-wrap:wrap}.ex a{font-size:12px;border:1px solid var(--line);border-radius:8px;padding:5px 10px;color:var(--fg);text-decoration:none}.ex a.off{pointer-events:none;opacity:.4}
+</style></head><body>
+<header><b>Crawlforge</b><span id="pill" class="pill">idle</span><span style="color:var(--mut);margin-left:auto;font-size:12px" id="ver"></span></header>
+<main>
+<aside>
+ <div class="card"><h3>Target</h3>
+  <textarea id="urls" placeholder="https://example.com&#10;one per line" spellcheck="false"></textarea>
+  <label>Preset</label><div class="chips" id="presets"></div></div>
+ <div class="card"><h3>Scope &amp; depth</h3>
+  <div class="row"><div><label>Depth</label><input type="number" id="depth" min="0" max="10" value="3"></div>
+  <div><label>Strategy</label><select id="strategy"><option>depth-first</option><option>breadth-first</option></select></div></div>
+  <label>Field scope</label><select id="field_scope"><option value="rdn">rdn (example.com + subdomains)</option><option value="dn">dn (any TLD)</option><option value="fqdn">fqdn (exact host)</option></select></div>
+ <div class="card"><h3>Features</h3><div id="toggles"></div></div>
+ <div class="card"><details><summary>Filters, limits &amp; network</summary>
+  <label>Only extensions (comma)</label><input type="text" id="ext_match" placeholder="php,json,js,none">
+  <label>Hide extensions</label><input type="text" id="ext_filter" placeholder="png,css">
+  <div class="row"><div><label>Only status</label><input type="text" id="match_status" placeholder="200,301"></div><div><label>Hide status</label><input type="text" id="filter_status" placeholder="404"></div></div>
+  <label>Out-of-scope regex (comma)</label><input type="text" id="out_scope" placeholder="/logout,/signout">
+  <label>URL must match regex (comma)</label><input type="text" id="match_regex">
+  <div class="row"><div><label>Workers</label><input type="number" id="concurrency" value="10" min="1" max="50"></div><div><label>Rate / sec</label><input type="number" id="rate_limit" value="150" min="0"></div>
+  <div><label>Timeout (s)</label><input type="number" id="timeout" value="10" min="1"></div><div><label>Max seconds</label><input type="number" id="crawl_duration" value="0" min="0"></div>
+  <div><label>Max pages/host</label><input type="number" id="max_domain_pages" value="0" min="0"></div><div><label>Delay (s)</label><input type="number" id="delay" value="0" min="0" step="0.1"></div></div>
+  <label>Proxy</label><input type="text" id="proxy" placeholder="http://127.0.0.1:8080">
+  <label>Headers (one per line)</label><textarea id="headers" placeholder="Authorization: Bearer …" spellcheck="false"></textarea></details></div>
+ <div class="card">
+  <label class="auth"><input type="checkbox" id="auth"> I own these targets or have written permission to test them.</label>
+  <div class="row"><button class="btn" id="go">Start crawl</button><button class="btn sec" id="stop" disabled>Stop</button></div><div class="err" id="err"></div></div>
+</aside>
+<section>
+ <div class="stats">
+  <div class="card stat"><b id="s-end">0</b><span>endpoints</span></div><div class="card stat"><b id="s-req">0</b><span>requests</span></div>
+  <div class="card stat"><b id="s-q">0</b><span>queued</span></div><div class="card stat"><b id="s-t">0s</b><span>elapsed</span></div></div>
+ <div class="card">
+  <div class="tabs" id="tabs"></div>
+  <div id="p-results"><div class="bar"><input type="text" id="q" placeholder="Search URL or title…"><div class="chips" id="sf"></div></div>
+   <div class="tw"><table><thead><tr><th>Status</th><th>URL</th><th>Title</th><th>Type</th><th>Size</th></tr></thead><tbody id="rows"></tbody></table></div>
+   <div class="empty" id="empty">Configure a target and press Start.</div><div style="color:var(--mut);font-size:12px;margin-top:8px" id="note"></div></div>
+  <div id="p-findings" hidden></div><div id="p-params" hidden></div><div id="p-summary" hidden></div>
+  <div class="ex" style="margin-top:12px" id="ex"></div>
+ </div>
+</section></main>
+<script>
+const $=id=>document.getElementById(id),el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const TOG=[["js_crawl","JavaScript endpoint parsing"],["known_files","robots.txt + sitemap.xml"],["path_climb","Path climb (parent dirs)"],["form_extraction","Extract forms"],["auto_form_fill","Autofill & follow GET forms"],["tech_detect","Technology detection"],["secrets","Secret patterns (masked)"],["content_similar","Near-duplicate page filter"],["filter_similar","Similar-URL filter"],["ignore_query_params","Ignore query values"]];
+const NUM=["depth","concurrency","rate_limit","timeout","crawl_duration","max_domain_pages","delay"],CSV=["ext_match","ext_filter","out_scope","match_regex"],INTS=["match_status","filter_status"];
+let EXTRA={},job=null,since=0,ALL=[],sf="all",tab="results",timer=null,PRE={};
+TOG.forEach(([k,l])=>{const w=el("label","tg");const i=el("input");i.type="checkbox";i.id=k;w.append(i,el("span",null,l));$("toggles").append(w)});
+const csv=s=>s.split(",").map(x=>x.trim()).filter(Boolean);
+function collect(){const o={urls:$("urls").value.split("\n").map(s=>s.trim()).filter(Boolean),authorised:$("auth").checked,strategy:$("strategy").value,field_scope:$("field_scope").value,proxy:$("proxy").value,headers:$("headers").value.split("\n").map(s=>s.trim()).filter(Boolean)};
+ TOG.forEach(([k])=>o[k]=$(k).checked);NUM.forEach(k=>o[k]=Number($(k).value||0));CSV.forEach(k=>o[k]=csv($(k).value));INTS.forEach(k=>o[k]=csv($(k).value).map(Number).filter(Number.isInteger));return Object.assign(o,EXTRA)}
+const DEF={depth:3,concurrency:10,rate_limit:150,timeout:10,crawl_duration:0,max_domain_pages:0,delay:0};
+function applyPreset(n){const p=PRE[n].options;EXTRA={};NUM.forEach(k=>$(k).value=DEF[k]);$("strategy").value="depth-first";$("ext_match").value="";["retries","host_rate_limit"].forEach(k=>{if(k in p)EXTRA[k]=p[k]});TOG.forEach(([k])=>$(k).checked=!!p[k]);NUM.forEach(k=>{if(k in p)$(k).value=p[k]});if(p.strategy)$("strategy").value=p.strategy;
+ CSV.forEach(k=>{if(k in p)$(k).value=p[k].join(",")});document.querySelectorAll("#presets .chip").forEach(c=>c.classList.toggle("on",c.dataset.n===n))}
+async function api(path,body){const r=await fetch(path,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{});const j=await r.json();if(!r.ok)throw new Error(j.error||r.status);return j}
+function setPill(s){const p=$("pill");p.textContent=s;p.className="pill "+s}
+async function start(){$("err").textContent="";try{const j=await api("/api/jobs",collect());job=j.id;since=0;ALL=[];$("rows").textContent="";render();
+ $("go").disabled=true;$("stop").disabled=false;setPill("running");window.scrollTo({top:0,behavior:"smooth"});poll()}catch(e){$("err").textContent=e.message}}
+async function poll(){try{const v=await api(`/api/jobs/${job}?since=${since}`);since=v.next;ALL.push(...v.records);
+ $("s-end").textContent=v.total;$("s-req").textContent=v.fetched;$("s-q").textContent=v.queued;$("s-t").textContent=v.elapsed+"s";setPill(v.status);
+ if(v.records.length)render();if(tab!=="results")loadAnalysis();
+ if(v.status==="running"){timer=setTimeout(poll,800);return}
+ $("go").disabled=false;$("stop").disabled=true;if(v.error)$("err").textContent=v.error;ex();loadAnalysis(true)}catch(e){$("err").textContent=e.message;$("go").disabled=false}}
+const cls=c=>"s s"+Math.floor(c/100),fmt=n=>n>1048576?(n/1048576).toFixed(1)+" MB":n>1024?(n/1024).toFixed(1)+" KB":n+" B";
+function render(){const q=$("q").value.toLowerCase(),rows=ALL.filter(r=>(sf==="all"||String(Math.floor(r.response.status_code/100))===sf)&&(!q||r.request.endpoint.toLowerCase().includes(q)||(r.response.title||"").toLowerCase().includes(q)));
+ const tb=$("rows");tb.textContent="";rows.slice(0,1000).forEach(r=>{const tr=el("tr"),s=el("td"),u=el("td"),a=el("a",null,r.request.endpoint);a.href=r.request.endpoint;a.target="_blank";a.rel="noopener noreferrer";
+  s.append(el("span",cls(r.response.status_code),r.response.status_code||"ERR"));u.append(a);tr.append(s,u,el("td",null,r.response.title||""),el("td",null,r.response.content_type||""),el("td",null,fmt(r.response.content_length||0)));tb.append(tr)});
+ $("empty").textContent=ALL.length?"No rows match the filter.":"Configure a target and press Start.";$("empty").hidden=rows.length>0;
+ $("note").textContent=rows.length>1000?`Showing first 1000 of ${rows.length}. Use search/filters or export for all.`:""}
+async function loadAnalysis(){if(!job)return;try{const a=await api(`/api/jobs/${job}/analysis`);
+ const f=$("p-findings");f.textContent="";const ks=Object.keys(a.findings);if(!ks.length)f.append(el("div","empty","Nothing notable yet."));ks.forEach(k=>{f.append(el("h4",null,`${k} (${a.findings[k].length})`));const ul=el("ul","f");a.findings[k].slice(0,50).forEach(x=>ul.append(el("li",null,x)));f.append(ul)});
+ const p=$("p-params");p.textContent="";const pk=Object.entries(a.params);if(!pk.length)p.append(el("div","empty","No parameters found."));pk.forEach(([k,n])=>{const d=el("div","kv");d.append(el("span",null,k),el("span",null,"×"+n));p.append(d)});
+ const s=$("p-summary");s.textContent="";[["Status","status"],["Hosts","hosts"],["Extensions","extensions"],["Content types","content_types"],["Depth","depth"]].forEach(([t,k])=>{s.append(el("h4",null,t));const e=Object.entries(a.summary[k]),m=Math.max(1,...e.map(x=>x[1]));
+  e.forEach(([n,c])=>{const d=el("div","kv"),b=el("span"),i=el("i");i.style.width=Math.max(2,c/m*100)+"%";b.append(i);b.style.flex="1";d.append(el("span",null,n),b,el("span",null,c));s.append(d)})})}catch(e){}}
+function ex(){const b=$("ex");b.textContent="";["csv","html","jsonl","txt"].forEach(f=>{const a=el("a",null,"Export "+f.toUpperCase());a.href=`/api/jobs/${job}/export?fmt=${f}`;b.append(a)})}
+[["results","Results"],["findings","Findings"],["params","Parameters"],["summary","Summary"]].forEach(([k,l])=>{const b=el("button","tab"+(k===tab?" on":""),l);b.onclick=()=>{tab=k;document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t===b));["results","findings","params","summary"].forEach(x=>$("p-"+x).hidden=x!==k);if(k!=="results")loadAnalysis()};$("tabs").append(b)});
+[["all","All"],["2","2xx"],["3","3xx"],["4","4xx"],["5","5xx"]].forEach(([k,l])=>{const c=el("button","chip"+(k==="all"?" on":""),l);c.onclick=()=>{sf=k;document.querySelectorAll("#sf .chip").forEach(x=>x.classList.toggle("on",x===c));render()};$("sf").append(c)});
+$("q").oninput=render;$("go").onclick=start;$("stop").onclick=async()=>{try{await api(`/api/jobs/${job}/stop`,{})}catch(e){}};
+api("/api/presets").then(d=>{PRE=d.presets;$("ver").textContent="v"+d.version;Object.keys(PRE).forEach(n=>{const c=el("button","chip",n);c.dataset.n=n;c.title=PRE[n].description;c.onclick=()=>applyPreset(n);$("presets").append(c)});applyPreset("standard")}).catch(e=>$("err").textContent=e.message);
+</script></body></html>
